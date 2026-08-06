@@ -36,9 +36,9 @@ factory-test\dht11.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h
 factory-test\dht11.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
 factory-test\dht11.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h
 factory-test\dht11.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
-factory-test\dht11.o: ../BSP/Inc/console.h
 factory-test\dht11.o: F:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
 factory-test\dht11.o: F:\Keil5\ARM\ARMCC\Bin\..\include\string.h
+factory-test\dht11.o: ../BSP/Inc/console.h
 factory-test\dht11.o: F:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 factory-test\dht11.o: F:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 factory-test\dht11.o: ../BSP/Inc/queue.h
