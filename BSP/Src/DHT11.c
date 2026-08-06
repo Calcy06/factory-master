@@ -10,6 +10,7 @@
 
 extern TIM_HandleTypeDef htim1;
 
+float tem, hum;
 #define Delay_ms(x) HAL_Delay(x)
 
 static void Delay_us(uint16_t us)
@@ -124,7 +125,7 @@ void DHT11_Data(float *temp, float *hum)
 
 static int DHT11_get(int argc, char **argv)
 {
-    float tem = 0, hum = 0;
+    tem = 0, hum = 0;
     PRINTF("\r\n---------温湿度传感器测试--------------- \r\n");
     __disable_irq();
     DHT11_Data(&tem, &hum);

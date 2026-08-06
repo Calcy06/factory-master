@@ -3,18 +3,18 @@
         {
             "name": "factory-test",
             "includePath": [
-                "f:\\aiot_xingshan\\factory-test\\Core\\Inc",
-                "f:\\aiot_xingshan\\factory-test\\Drivers\\STM32H7xx_HAL_Driver\\Inc",
-                "f:\\aiot_xingshan\\factory-test\\Drivers\\STM32H7xx_HAL_Driver\\Inc\\Legacy",
-                "f:\\aiot_xingshan\\factory-test\\Drivers\\CMSIS\\Device\\ST\\STM32H7xx\\Include",
-                "f:\\aiot_xingshan\\factory-test\\Drivers\\CMSIS\\Include",
-                "f:\\aiot_xingshan\\factory-test\\BSP\\Inc",
+                "f:\\aiot\\test\\factory-test\\Core\\Inc",
+                "f:\\aiot\\test\\factory-test\\Drivers\\STM32H7xx_HAL_Driver\\Inc",
+                "f:\\aiot\\test\\factory-test\\Drivers\\STM32H7xx_HAL_Driver\\Inc\\Legacy",
+                "f:\\aiot\\test\\factory-test\\Drivers\\CMSIS\\Device\\ST\\STM32H7xx\\Include",
+                "f:\\aiot\\test\\factory-test\\Drivers\\CMSIS\\Include",
+                "f:\\aiot\\test\\factory-test\\BSP\\Inc",
                 "F:\\Keil5\\ARM\\ARMCC\\include",
                 "F:\\Keil5\\ARM\\ARMCC\\include\\rw",
-                "f:\\aiot_xingshan\\factory-test\\MDK-ARM",
-                "f:\\aiot_xingshan\\factory-test\\Core\\Src",
-                "f:\\aiot_xingshan\\factory-test\\Drivers\\STM32H7xx_HAL_Driver\\Src",
-                "f:\\aiot_xingshan\\factory-test\\BSP\\Src"
+                "f:\\aiot\\test\\factory-test\\MDK-ARM",
+                "f:\\aiot\\test\\factory-test\\Core\\Src",
+                "f:\\aiot\\test\\factory-test\\Drivers\\STM32H7xx_HAL_Driver\\Src",
+                "f:\\aiot\\test\\factory-test\\BSP\\Src"
             ],
             "defines": [
                 "USE_HAL_DRIVER",

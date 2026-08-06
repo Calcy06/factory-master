@@ -46,6 +46,8 @@
 #define SCD4x_COMMAND_MEASURE_SINGLE_SHOT 0x219d          // execution time: 5000ms
 #define SCD4x_COMMAND_MEASURE_SINGLE_SHOT_RHT_ONLY 0x2196 // execution time: 50ms
 
+uint16_t data_co2 = -1;
+
 typedef struct _device
 {
     char name[10];
@@ -169,4 +171,71 @@ void SCD04_cmd_register(void)
 void SCD04_INIT(void)
 {
     SCD04_init_dev_struct(&scd04_dev, &hi2c2, "SCD04", true);
+}
+
+// 单次采集 == 采集 + 读数据
+int scd04_get_Data(void)
+{
+
+    if (scd04_send_command(&scd04_dev, SCD4x_COMMAND_MEASURE_SINGLE_SHOT, 2))
+    {
+        printf("\r\nHAL_ERROR SCD4x_COMMAND_MEASURE_SINGLE_SHOT \r\n");
+
+        return HAL_ERROR;
+    }
+    HAL_Delay(5000);
+
+    if (scd04_send_command(&scd04_dev, SCD4x_COMMAND_READ_MEASUREMENT, 2))
+    {
+        printf("\r\nHAL_ERROR SCD4x_COMMAND_READ_MEASUREMENT \r\n");
+
+        return HAL_ERROR;
+    }
+
+    HAL_Delay(1);
+    if (sensor_recv(&scd04_dev, 9) != HAL_OK)
+    {
+        printf("\r\n Recv  data error.\r\n");
+        return HAL_ERROR;
+    }
+
+    data_co2 = (uint16_t)scd04_dev.buffer[0] << 8 | (uint16_t)scd04_dev.buffer[1];
+
+    memset(scd04_dev.buffer, 0, 9);
+    return 1;
+}
+
+// 采集
+int scd04_collect(void)
+{
+
+    if (scd04_send_command(&scd04_dev, SCD4x_COMMAND_MEASURE_SINGLE_SHOT, 2))
+    {
+        printf("\r\nHAL_ERROR SCD4x_COMMAND_MEASURE_SINGLE_SHOT \r\n");
+
+        return HAL_ERROR;
+    }
+}
+
+// 读数据
+int scd04_read_data(void)
+{
+    if (scd04_send_command(&scd04_dev, SCD4x_COMMAND_READ_MEASUREMENT, 2))
+    {
+        printf("\r\nHAL_ERROR SCD4x_COMMAND_READ_MEASUREMENT \r\n");
+
+        return HAL_ERROR;
+    }
+
+    HAL_Delay(1);
+    if (sensor_recv(&scd04_dev, 9) != HAL_OK)
+    {
+        printf("\r\n Recv  data error.\r\n");
+        return HAL_ERROR;
+    }
+
+    data_co2 = (uint16_t)scd04_dev.buffer[0] << 8 | (uint16_t)scd04_dev.buffer[1];
+
+    memset(scd04_dev.buffer, 0, 9);
+    return 1;
 }

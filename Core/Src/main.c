@@ -55,21 +55,52 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+static uint32_t collect_tick = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 bool key_1_touch = false;
-bool key_2_touch = false; // KEY2 按下时的事件标志，在中断里置 true，key_function 中清�?
+bool key_2_touch = false; // KEY2 按下时的事件标志，在中断里置 true，key_function 中清�???
 bool key_3_touch = false;
 bool fs_status = false;
-int now_page = 0; // LCD 当前显示页面索引 now_page�?0=�?0页，1=�?1页，在主循环切换逻辑中更�?
+bool lcd_status = false;
+int now_page = 0; // LCD 当前显示页面索引 now_page�???0=�???0页，1=�???1页，在主循环切换逻辑中更�???
+
+#define BH1750_TIMER_PERIOD 3
+#define DHT11_TIMER_PERIOD 10
+#define SCD04_TIMER_PERIOD 5
+#define RFID_TIMER_PERIOD 2
+#define CO2_READ_TIMER_PERIOD 1
+static int bh1750_count_timer = BH1750_TIMER_PERIOD;
+static int dht11_count_timer = DHT11_TIMER_PERIOD;
+static int scd04_count_timer = SCD04_TIMER_PERIOD;
+static int rfid_count_timer = RFID_TIMER_PERIOD;
+
+enum
+{
+    COLLECT = 0,
+    READ = 1,
+};
+
+static int co2_status = COLLECT;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    unsigned int retry = 0;
+    if (htim == &htim2)
+    {
+        bh1750_count_timer--;
+        dht11_count_timer--;
+        scd04_count_timer--;
+        rfid_count_timer--;
+    }
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart == &huart1) // 串口1
@@ -166,25 +197,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 
-void lcd_set_page0(void)
-{
-    char temp[256] = {0};
-    // 终端协议：SET_TXT(行号,'内容');  显示温湿度与光照
-    sprintf(temp, "SET_TXT(4,'10.5\xA1\xE3\x43');SET_TXT(5,'10.6RH');SET_TXT(6,'888lx');\r\n");
-    lcd_set_data(temp); // 通过 USART3 下发本页文本
-}
-
-void lcd_set_page1(void)
-{
-    char temp[256] = {0};
-    sprintf(temp, "SET_TXT(4,'%s');SET_TXT(5,'%s');SET_TXT(6,'%ldPa');SET_TXT(7,'%ldPPM');\r\n",
-            fs_status > 0 ? "open" : "close",
-            0 > 0 ? "open" : "close",
-            10,
-            10);
-    lcd_set_data(temp);
-}
-
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     static uint32_t key3_tick = 0;
@@ -203,6 +215,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
                 HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_SET);
                 __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 99);
                 fs_status = true;
+                lcd_status = true;
             }
             else
             {
@@ -211,34 +224,55 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
                 HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_RESET);
                 __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);
                 fs_status = false;
+                lcd_status = false;
             }
             touch_3 = !touch_3;
         }
         break;
     case KEY2_Pin:
-        // 读取引脚确认是�?�按下�??(低电�?)，消抖并确认硬件状�??
+        // 读取引脚确认是�?�按下�??(低电�???)，消抖并确认硬件状�??
         if (HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET)
         {
-            // KEY2 按下逻辑：仅置事件标志，真正的页面切换在 key_function() 中执�?
+            // KEY2 按下逻辑：仅置事件标志，真正的页面切换在 key_function() 中执�???
             key_2_touch = true;
         }
         break;
     case KEY1_Pin:
-        // 读取引脚确认是�?�按下�??(低电�?)，消抖并确认硬件状�??
+        // 读取引脚确认是�?�按下�??(低电�???)，消抖并确认硬件状�??
         if (HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET)
         {
-            // KEY1 按下逻辑：仅置事件标志，真正的页面切换在 key_function() 中执�?
+            // KEY1 按下逻辑：仅置事件标志，真正的页面切换在 key_function() 中执�???
             key_1_touch = true;
         }
         break;
     }
 }
 
+void lcd_set_page0(void)
+{
+    char temp[256] = {0};
+    // 终端协议：SET_TXT(行号,'内容');  显示温湿度与光照
+    // sprintf(temp, "SET_TXT(4,'10.5\xA1\xE3\x43');SET_TXT(5,'10.6RH');SET_TXT(6,'888lx');\r\n");
+    sprintf(temp, "SET_TXT(4,'%.1f\xA1\xE3\x43');SET_TXT(5,'%.1fRH');SET_TXT(6,'%dlx');\r\n", tem, hum, lx_Data);
+    lcd_set_data(temp); // 通过 USART3 下发本页文本
+}
+
+void lcd_set_page1(void)
+{
+    char temp[256] = {0};
+    sprintf(temp, "SET_TXT(4,'%s');SET_TXT(5,'%s');SET_TXT(6,'%ldPa');SET_TXT(7,'%ldPPM');\r\n",
+            lcd_status > 0 ? "open" : "close",
+            fs_status > 0 ? "open" : "close",
+            pressure_Data,
+            data_co2);
+    lcd_set_data(temp);
+}
+
 void key_function(void)
 {
-    const int PAGE_COUNT = 2; /* 页面总数，用于循环切�? */
+    const int PAGE_COUNT = 2; /* 页面总数，用于循环切�??? */
 
-    /* KEY1 处理：切换到上一�? */
+    /* KEY1 处理：切换到上一�??? */
     if (key_1_touch)
     {
         int target = (now_page - 1 + PAGE_COUNT) % PAGE_COUNT; /* 计算目标页面（循环） */
@@ -256,7 +290,7 @@ void key_function(void)
         key_1_touch = false; /* 清除标志 */
     }
 
-    /* KEY2 处理：切换到下一�? */
+    /* KEY2 处理：切换到下一�??? */
     if (key_2_touch)
     {
         int target = (now_page + 1) % PAGE_COUNT; /* 计算目标页面（循环） */
@@ -273,6 +307,67 @@ void key_function(void)
         }
         key_2_touch = false; /* 清除标志 */
     }
+}
+
+static void timer_collect_data(void)
+{
+    if (dht11_count_timer < 0)
+    {
+        HAL_TIM_Base_Stop_IT(&htim2);
+        DHT11_Data(&tem, &hum);
+        dht11_count_timer = DHT11_TIMER_PERIOD;
+        goto end;
+    }
+
+    if (scd04_count_timer < 0)
+    {
+        HAL_TIM_Base_Stop_IT(&htim2);
+        if (co2_status == COLLECT)
+        {
+            scd04_collect();
+            scd04_count_timer = SCD04_TIMER_PERIOD;
+            co2_status = READ;
+        }
+        else
+        {
+            co2_status = COLLECT;
+            scd04_read_data();
+            scd04_count_timer = CO2_READ_TIMER_PERIOD;
+        }
+
+        goto end;
+    }
+
+    if (bh1750_count_timer < 0)
+    {
+        HAL_TIM_Base_Stop_IT(&htim2);
+        bh1750_count_timer = BH1750_TIMER_PERIOD;
+        bh7150_get_data();
+
+        goto end;
+    }
+
+    return;
+
+end:
+    if (now_page)
+    {
+        lcd_set_page1();
+    }
+    else
+    {
+        lcd_set_page0();
+    }
+    HAL_TIM_Base_Start_IT(&htim2);
+}
+
+static void get_sensor_data(void)
+{
+    // 先采集二氧化碳，这个传感器有延时，这样其他传感器有一个初始化的时�????
+    HAL_Delay(3000);
+    scd04_get_Data();
+    DHT11_Data(&tem, &hum);
+    bh7150_get_data();
 }
 /* USER CODE END 0 */
 
@@ -314,12 +409,12 @@ int main(void)
     MX_UART4_Init();
     MX_UART5_Init();
     MX_UART7_Init();
+    MX_TIM2_Init();
     /* USER CODE BEGIN 2 */
     HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
     __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);
     SCD04_INIT();
     BH1750_INIT();
-    lcd_set_page0();
 
     HAL_UART_Receive_IT(&huart1, &dataRcvd, 1);
     HAL_UART_Receive_IT(&huart3, &lcd_temp, 1);
@@ -327,6 +422,7 @@ int main(void)
     HAL_UART_Receive_IT(&huart5, &csb_temp, 1);
     HAL_UART_Receive_IT(&huart7, &xs_temp, 1);
     HAL_UART_Receive_IT(&huart10, &bmp280_temp, 1);
+    HAL_TIM_Base_Start_IT(&htim2);
 
     console_init();
 
@@ -339,6 +435,8 @@ int main(void)
     lcd_cmd_register();
     SCD04_cmd_register();
 
+    get_sensor_data();
+    lcd_set_page0();
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -347,6 +445,7 @@ int main(void)
     {
         console_run();
         key_function();
+        timer_collect_data();
     }
     /* USER CODE END WHILE */
 

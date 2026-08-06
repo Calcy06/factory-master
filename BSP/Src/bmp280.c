@@ -15,8 +15,8 @@ static bool receive_success = false;
 
 extern UART_HandleTypeDef huart10;
 
-int pressure_Data = 0;
-double height_Data = 0;
+int pressure_Data = -1;
+double height_Data = -1;
 #define BMP280_HEAD "Pressure"
 
 static void get_pressure_number(char *input, int *pressure_Data, double *height_Data)

@@ -13,6 +13,7 @@ extern uint8_t bmp280_count; // 计数位
 extern uint8_t bmp280_temp;
 extern bool bmp280_frame_ready;
 extern double height_Data;
+extern int pressure_Data;
 
 uint8_t bmp280_check_frame(void);
 void bmp280_deal_buffer(void);

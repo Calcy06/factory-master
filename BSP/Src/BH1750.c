@@ -25,6 +25,8 @@
 #define CMD_CNG_TIME_HIGH 0x30 // 3 LSB set time
 #define CMD_CNG_TIME_LOW 0x60  // 5 LSB set time
 
+uint16_t lx_Data = -1;
+
 typedef struct BH1750_device
 {
     char name[10];
@@ -106,6 +108,7 @@ static HAL_StatusTypeDef BH1750_get_lumen(BH1750_device_t *dev)
 uint16_t bh7150_get_data(void)
 {
     BH1750_get_lumen(&bh7150_dev);
+    lx_Data = bh7150_dev.value;
     return bh7150_dev.value;
 }
 
@@ -115,6 +118,7 @@ static int bh7150_read(int argc, char **argv)
     PRINTF("\r\n---------光照传感器测试--------------- \r\n");
     bh7150_dev.value = -1;
     BH1750_get_lumen(&bh7150_dev);
+    lx_Data = bh7150_dev.value;
     PRINTF("\r\n* lx: %ld  \r\n", bh7150_dev.value);
     if (bh7150_dev.value == -1)
     {
