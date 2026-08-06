@@ -1,0 +1,144 @@
+<html>
+<body>
+<pre>
+<h1>�Vision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ��Vision V5.36.0.0
+Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: a 3473251469@qq.com, a, LIC=8VRJ7-EZSCH-RAYDM-X24HI-H8EH7-UXFRM
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.36.0.0
+Toolchain Path:  F:\Keil5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.36.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      Segger\JL2CM3.dll V2.99.40.0
+Dialog DLL:      TCM.DLL V1.53.0.0
+ 
+<h2>Project:</h2>
+f:\aiot_xingshan\factory-test\MDK-ARM\factory-test.uvprojx
+Project File Date:  08/06/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'F:\Keil5\ARM\ARMCC\Bin'
+Rebuild target 'factory-test'
+assembling startup_stm32h723xx.s...
+compiling system_stm32h7xx.c...
+compiling stm32h7xx_hal_hsem.c...
+compiling stm32h7xx_hal_flash.c...
+compiling bmp280.c...
+..\BSP\Src\bmp280.c(80): warning:  #144-D: a value of type "int (*)()" cannot be used to initialize an entity of type "console_cmd_func_t"
+          .func = &bmp280_test,
+..\BSP\Src\bmp280.c: 1 warning, 0 errors
+compiling usart.c...
+compiling stm32h7xx_hal_gpio.c...
+compiling stm32h7xx_hal_msp.c...
+compiling stm32h7xx_hal_exti.c...
+compiling console.c...
+compiling stm32h7xx_hal_mdma.c...
+compiling queue.c...
+compiling i2c.c...
+compiling stm32h7xx_hal_pwr.c...
+compiling stm32h7xx_hal_i2c_ex.c...
+compiling gpio.c...
+compiling split_argv.c...
+compiling stm32h7xx_hal_rcc.c...
+compiling stm32h7xx_it.c...
+compiling tim.c...
+compiling main.c...
+../Core/Src/main.c(219): warning:  #2532-D: support for trigraphs is disabled
+          // 读取引脚确认是�?�按下�??(低电�??)，消抖并确认硬件状�??
+../Core/Src/main.c(190): warning:  #177-D: variable "key3_tick"  was declared but never referenced
+      static uint32_t key3_tick = 0;
+../Core/Src/main.c: 2 warnings, 0 errors
+compiling stm32h7xx_hal_cortex.c...
+compiling BH1750.c...
+..\BSP\Src\BH1750.c(115): warning:  #870-D: invalid multibyte character sequence
+      PRINTF("\r\n---------光照传感器测�?--------------- \r\n");
+..\BSP\Src\BH1750.c(116): warning:  #68-D: integer conversion resulted in a change of sign
+      bh7150_dev.value = -1;
+..\BSP\Src\BH1750.c(119): warning:  #514-D: pointless comparison of unsigned integer with a negative constant
+      if (bh7150_dev.value == -1)
+..\BSP\Src\BH1750.c(132): warning:  #870-D: invalid multibyte character sequence
+          .help = " 光照强度传感�? ",
+..\BSP\Src\BH1750.c: 4 warnings, 0 errors
+compiling stm32h7xx_hal_uart_ex.c...
+compiling stm32h7xx_hal_pwr_ex.c...
+compiling stm32h7xx_hal_flash_ex.c...
+compiling stm32h7xx_hal.c...
+compiling stm32h7xx_hal_rcc_ex.c...
+compiling stm32h7xx_hal_dma_ex.c...
+compiling stm32h7xx_hal_i2c.c...
+compiling stm32h7xx_hal_tim.c...
+compiling stm32h7xx_hal_tim_ex.c...
+compiling stm32h7xx_hal_uart.c...
+compiling stm32h7xx_hal_dma.c...
+compiling csb.c...
+..\BSP\Src\csb.c(50): warning:  #870-D: invalid multibyte character sequence
+          PRINTF("\r\n -----------超声�? PASS------------------- \r\n");
+..\BSP\Src\csb.c(54): warning:  #870-D: invalid multibyte character sequence
+      PRINTF("\r\n -----------超声�? FAIL------------------- \r\n");
+..\BSP\Src\csb.c: 2 warnings, 0 errors
+compiling DHT11.c...
+compiling EB21.c...
+..\BSP\Src\EB21.c(25): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *"
+      if (strlen(xs_buffer))
+..\BSP\Src\EB21.c: 1 warning, 0 errors
+compiling SCD04.c...
+..\BSP\Src\SCD04.c(143): warning:  #870-D: invalid multibyte character sequence
+      PRINTF("\r\n---------二氧化碳传感器测�?--------------- \r\n");
+..\BSP\Src\SCD04.c: 1 warning, 0 errors
+compiling usr_uart.c...
+..\BSP\Src\usr_uart.c(18): warning:  #940-D: missing return statement at end of non-void function "fputc" 
+  }
+..\BSP\Src\usr_uart.c: 1 warning, 0 errors
+compiling gnss.c...
+..\BSP\Src\gnss.c(59): warning:  #144-D: a value of type "int (*)()" cannot be used to initialize an entity of type "console_cmd_func_t"
+          .func = &gnss_test,
+..\BSP\Src\gnss.c: 1 warning, 0 errors
+compiling lcd.c...
+..\BSP\Src\lcd.c(42): warning:  #870-D: invalid multibyte character sequence
+      PRINTF("\r\n------------LCD显示屏测�?--------------- \r\n");
+..\BSP\Src\lcd.c(54): warning:  #120-D: return value type does not match the function type
+          return 1;
+..\BSP\Src\lcd.c(59): warning:  #120-D: return value type does not match the function type
+      return 0;
+..\BSP\Src\lcd.c(67): warning:  #144-D: a value of type "void (*)()" cannot be used to initialize an entity of type "console_cmd_func_t"
+          .func = &lcd_test,
+..\BSP\Src\lcd.c: 4 warnings, 0 errors
+linking...
+Program Size: Code=38732 RO-data=3896 RW-data=108 ZI-data=69932  
+FromELF: creating hex file...
+"factory-test\factory-test.axf" - 0 Error(s), 17 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.8.0.pack
+                ARM.CMSIS.5.8.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.5.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32H7xx_DFP.3.1.1.pack
+                Keil.STM32H7xx_DFP.3.1.1
+                STMicroelectronics STM32H7 Series Device Support and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_factory-test
+  F:\Keil5\ARM\PACK\ARM\CMSIS\5.8.0\CMSIS\Core\Include
+  F:\Keil5\ARM\PACK\Keil\STM32H7xx_DFP\3.1.1\Drivers\CMSIS\Device\ST\STM32H7xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.5.0
+      Include file:  CMSIS\Core\Include\tz_context.h
+Build Time Elapsed:  00:00:27
+</pre>
+</body>
+</html>
