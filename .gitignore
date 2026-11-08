@@ -1,0 +1,25 @@
+# ===== Keil MDK 编译产物（可由源码重新生成，不入库） =====
+MDK-ARM/factory-test/*
+!MDK-ARM/factory-test/factory-test.sct
+!MDK-ARM/factory-test/ExtDll.iex
+*.o
+*.crf
+*.d
+*.axf
+*.hex
+*.map
+*.dep
+*.lnp
+*.htm
+*.build_log.htm
+
+# ===== Keil 界面布局 / 调试日志 / 编辑器本地配置 =====
+*.uvguix.*
+MDK-ARM/.vscode/
+JLinkLog.txt
+*.log
+*.log.lock
+
+# ===== 备份与系统临时文件 =====
+*.bak
+Thumbs.db

@@ -34,7 +34,7 @@ uint8_t lcd_check_frame(void)
     return 0;
 }
 
-void lcd_test()
+static int lcd_test(int argc, char **argv)
 {
     char temp[100] = {0};
     sprintf(temp, "SET_TXT(4,'99.9\xA1\xE3\x43');SET_TXT(5,'99.9RH');SET_TXT(6,'999lx');\r\n");

@@ -11,12 +11,11 @@ uint8_t bmp280_buffer[BMP_BUFFER_LEN];
 uint8_t bmp280_count;            // 计数位
 uint8_t bmp280_temp;             // 缓存字符
 bool bmp280_frame_ready = false; // 帧就绪标志
-static bool receive_success = false;
 
 extern UART_HandleTypeDef huart10;
 
-int pressure_Data = -1;
-double height_Data = -1;
+int pressure_Data = 0;
+double height_Data = 0;
 #define BMP280_HEAD "Pressure"
 
 static void get_pressure_number(char *input, int *pressure_Data, double *height_Data)
@@ -58,12 +57,12 @@ void bmp280_deal_buffer(void)
     bmp280_frame_ready = false;
 }
 
-static int bmp280_test()
+static int bmp280_test(int argc, char **argv)
 {
     PRINTF("\r\n---------大气压传感器测试--------------- \r\n");
 
     printf("\r\n* %s\r\n", gn_buffer);
-    if (receive_success)
+    if (pressure_Data)
     {
         PRINTF("\r\n -----------BMP280 PASS------------------- \r\n");
         return 1;

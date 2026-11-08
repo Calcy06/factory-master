@@ -10,7 +10,6 @@ uint8_t xs_temp = 0;   // 缓存字符
 #define XS_TEST_CMD "AT+MAC?\r\n"
 
 extern UART_HandleTypeDef huart7;
-extern UART_HandleTypeDef huart1;
 
 static int xs_get_msg(int argc, char **argv)
 {

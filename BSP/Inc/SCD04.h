@@ -3,7 +3,6 @@
 
 void SCD04_INIT(void);
 void SCD04_cmd_register(void);
-void DHT11_Data(float *temp, float *hum);
 int scd04_get_Data(void);
 int scd04_collect(void);
 int scd04_read_data(void);

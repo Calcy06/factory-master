@@ -37,12 +37,13 @@ void gnss_deal_buffer()
     gnss_success = true;
 }
 
-int gnss_test()
+static int gnss_test(int argc, char **argv)
 {
     PRINTF("-------gnss卫星测试---------");
 
-    printf("\r\n* %s\r\n", gn_buffer);
-    if (gnss_success)
+    int len = strlen(gn_buffer);
+    PRINTF("\r\n* %s \r\n", gn_buffer);
+    if (len)
     {
         PRINTF("\r\n -----------GNSS PASS------------------- \r\n");
         return 1;

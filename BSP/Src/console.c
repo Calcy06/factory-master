@@ -1,8 +1,9 @@
 #include "console.h"
 #include "queue.h"
 
-#define HANDLE_LEN 128
 #define MAX_ARGS 6
+
+static struct list_head cmd_list;
 
 __packed typedef struct
 {
@@ -10,10 +11,24 @@ __packed typedef struct
     int len;
 } HANDLE_TYPE_S;
 
-static struct list_head cmd_list;
 static HANDLE_TYPE_S Handle = {0};
 
-extern size_t console_split_argv(char *line, char **argv, size_t argv_size);
+void console_cmd_register(cmd_item_t *cmd)
+{
+    if (!cmd)
+    {
+        PRINTF("\r\n  cmd is NULL  \r\n");
+        return;
+    }
+
+    cmd_item_t *node;
+    node = (cmd_item_t *)malloc(sizeof(cmd_item_t));
+    strcpy(node->command, (const char *)cmd->command);
+    strcpy(node->help, (const char *)cmd->help);
+    node->func = cmd->func;
+
+    list_add_tail(&node->list, &cmd_list);
+}
 
 void console_run(void)
 {
@@ -22,7 +37,7 @@ void console_run(void)
     /* 通过死循环一个一个读出所有串口数据 */
     while (queue_out(&data))
     {
-        if (Handle.len > BUFFER_SIZE)
+        if (Handle.len > BUFFER_SIZE - 1)
         {
             /* 缓冲区太满，提示对方输入超出限制 */
             break;
@@ -104,7 +119,19 @@ static int console_clear(int argc, char **argv)
     TERMINAL_RESET_CURSOR();
     TERMINAL_DISPLAY_CLEAR();
 
-    return true;
+    return 1;
+}
+
+static int console_help(int argc, char **argv)
+{
+
+    cmd_item_t *pos, *ppos;
+    list_for_each_entry_safe(pos, ppos, &cmd_list, list)
+    {
+        PRINTF("\r\n-> CMD[%s] %s\r\n", pos->command, pos->help);
+    }
+
+    return 1;
 }
 
 static int console_show(int argc, char **argv)
@@ -150,37 +177,7 @@ static int console_test(int argc, char **argv)
     return true;
 }
 
-static int console_help(int argc, char **argv)
-{
-
-    cmd_item_t *pos, *ppos;
-    list_for_each_entry_safe(pos, ppos, &cmd_list, list)
-    {
-        PRINTF("\r\n-> CMD[%s] %s\r\n", pos->command, pos->help);
-    }
-
-    return 1;
-}
-
-/* 注册命令到系统链表中 */
-void console_cmd_register(cmd_item_t *cmd)
-{
-    cmd_item_t *node;
-    if (!cmd)
-    {
-        printf("cmd is error\n");
-        return;
-    }
-
-    node = (cmd_item_t *)malloc(sizeof(cmd_item_t));
-    strcpy(node->command, (const char *)cmd->command);
-    strcpy(node->help, (const char *)cmd->help);
-    node->func = cmd->func;
-
-    list_add_tail(&node->list, &cmd_list);
-}
-
-static void system_cmd_register(void)
+void system_cmd_register()
 {
     const cmd_item_t clearcmd = {
         .command = "clear",
@@ -215,7 +212,7 @@ static void system_cmd_register(void)
     console_cmd_register((cmd_item_t *)&testcmd);
 }
 
-void console_init(void)
+void console_init()
 {
     INIT_LIST_HEAD(&cmd_list);
     system_cmd_register();
@@ -223,11 +220,5 @@ void console_init(void)
     TERMINAL_DISPLAY_CLEAR();
     TERMINAL_RESET_CURSOR();
 
-    PRINTF("-------------------------------\r\n\r\n");
-    TERMINAL_HIGH_LIGHT();
-    INFO("    Console version: V1.0          \r\n\r\n");
-    INFO("    coder:  XS                 	   \r\n\r\n");
-    TERMINAL_UN_HIGH_LIGHT();
-    PRINTF("-------------------------------\r\n\r\n");
-    PRINTF("\r\n-> console:");
+    PRINTF("\r\n-> console: 输入个 help 试试看?");
 }
